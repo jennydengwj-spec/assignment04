@@ -1,26 +1,115 @@
 ---
-title: "Untitle"
-format: html
-editor: visual
+title: "Assignment 04"
+author: "Wenjie Deng"
+format: 
+  html:
+    embed-resources: true
+execute:
+  warning: false
+  message: false
 ---
-
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
 ```{r}
-1 + 1
+
+#| message: false
+
+#| warning: false
+
+library(tidyverse)
+
+```
+## Data
+The data used in this analysis come from the [CMS Major Eligibility Group Information for Medicaid and CHIP Beneficiaries by Month](https://data.medicaid.gov/dataset/ea9b7db3-db71-4663-b4e1-67e11d1d4fcc).
+Enrollment counts reported as “DS” were treated as missing, and observations flagged as unusable were excluded from the analysis.
+```{r}
+medicaid <- read_csv(
+
+  "/Users/wenjenny/Desktop/MajorEligibilityGroup-montly-102025.csv"
+
+) |>
+
+  mutate(
+
+    CountEnrolled = parse_number(CountEnrolled),
+
+    Month = as.Date(paste0(Month, "01"), format = "%Y%m%d")
+
+  ) |>
+
+  filter(
+
+    !is.na(CountEnrolled),
+
+    dunusable != "Unusable" | is.na(dunusable)
+
+  )
+
+
+medicaid |>
+  count(`majoreligibility group`)
 ```
 
-You can add options to executable code like this
-
+## Visualization 1: Enrollment by Eligibility Group
 ```{r}
-#| echo: false
-2 * 2
+latest_month <- max(medicaid$Month)
+
+enrollment_group <- medicaid |>
+  filter(
+    Month == latest_month,
+    `majoreligibility group` != "Unknown"
+  ) |>
+  group_by(`majoreligibility group`) |>
+  summarize(
+    enrollment = sum(CountEnrolled)
+  )
+
+enrollment_group |>
+  ggplot(
+    aes(
+      x = reorder(`majoreligibility group`, enrollment),
+      y = enrollment,
+      fill = `majoreligibility group`
+    )
+  ) +
+  geom_col(width = 0.7) +
+  geom_text(
+    aes(
+      label = scales::label_number(
+        scale = 1e-6,
+        suffix = "M",
+        accuracy = 0.1
+      )(enrollment)
+    ),
+    hjust = -0.1,
+    size = 3.5
+  ) +
+  coord_flip() +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1e-6,
+      suffix = "M"
+    ),
+    expand = expansion(mult = c(0, 0.18))
+  ) +
+  labs(
+    title = "Children Make Up the Largest Medicaid and CHIP Eligibility Group",
+    subtitle = "Enrollment by major eligibility group across reporting jurisdictions, December 2022",
+    x = NULL,
+    y = "Enrollment",
+    fill = "Eligibility group",
+    caption = "Source: Centers for Medicare & Medicaid Services (CMS)"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none"
+  )
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups.
+```
+Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups.
+## Visualization 2
+
+## Visualization 3
+
+## Visualization 4
+
