@@ -9,13 +9,7 @@ execute:
   message: false
 ---
 ```{r}
-
-#| message: false
-
-#| warning: false
-
 library(tidyverse)
-
 ```
 ## Data
 The data used in this analysis come from the [CMS Major Eligibility Group Information for Medicaid and CHIP Beneficiaries by Month](https://data.medicaid.gov/dataset/ea9b7db3-db71-4663-b4e1-67e11d1d4fcc).
@@ -43,9 +37,6 @@ medicaid <- read_csv(
 
   )
 
-
-medicaid |>
-  count(`majoreligibility group`)
 ```
 
 ## Visualization 1: Enrollment by Eligibility Group
@@ -104,9 +95,7 @@ enrollment_group |>
   )
 ```
 
-Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups.
-```
-Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups.
+Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups. These differences illustrate how Medicaid and CHIP serve populations through several distinct eligibility pathways, which is important when evaluating enrollment patterns and program reach.
 
 ## Visualization 2: Enrollment Trends by Eligibility Group
 ```{r}
@@ -158,7 +147,7 @@ trend_data |>
   theme_minimal()
 ```
 
-Children remained the largest Medicaid and CHIP eligibility group throughout 2017–2022. Enrollment increased notably after 2020 among children, adults, and especially the adult expansion group. In contrast, enrollment among aged beneficiaries and persons with disabilities changed more gradually over the period.
+Children remained the largest Medicaid and CHIP eligibility group throughout 2017–2022. Enrollment increased notably after 2020 among children, adults, and especially the adult expansion group. In contrast, enrollment among aged beneficiaries and persons with disabilities changed more gradually over the period. These trends show that changes in overall Medicaid and CHIP enrollment were not evenly distributed across eligibility groups, which is relevant for understanding how program enrollment evolves over time.
 
 ## Visualization 3: State Enrollment Distribution by Eligibility Group
 ```{r}
@@ -202,7 +191,7 @@ state_enrollment |>
   )
 ```
 
-Children had the highest state-level enrollment and the widest distribution across reporting jurisdictions in December 2022. The adult expansion group also showed substantial variation across states. Several eligibility groups had high-enrollment outliers, indicating that enrollment was unevenly distributed across jurisdictions.
+Children had the highest state-level enrollment and the widest distribution across reporting jurisdictions in December 2022. The adult expansion group also showed substantial variation across states. Several eligibility groups had high-enrollment outliers, indicating that enrollment was unevenly distributed across jurisdictions. This state-level variation is important for Medicaid policy because national enrollment totals can mask substantial differences in the size of state programs and the populations they serve.
 
 ## Visualization 4: State Enrollment Patterns by Eligibility Group
 ```{r}
@@ -254,7 +243,7 @@ heatmap_top_states |>
   ) +
   labs(
     title = "Enrollment Patterns Vary Across States and Eligibility Groups",
-    subtitle = "15 jurisdictions with the largest total enrollment, December 2022",
+    subtitle = "15 jurisdictions with the largest total enrollment, December 2022; square-root color scale",
     x = "Eligibility group",
     y = NULL,
     fill = "Enrollment",
@@ -269,5 +258,28 @@ heatmap_top_states |>
   )
 ```
 
-California had the highest enrollment among the 15 selected jurisdictions, particularly among children and the adult expansion group. Children also represented a relatively large eligibility group across many of the selected states. Enrollment patterns varied considerably across both states and eligibility groups.
+California had the highest enrollment among the 15 selected jurisdictions, particularly among children and the adult expansion group. Children also represented a relatively large eligibility group across many of the selected states. Enrollment patterns varied considerably across both states and eligibility groups. These differences highlight the importance of examining state-level patterns when assessing Medicaid and CHIP enrollment rather than relying only on national totals.
 
+## Visualization Requirements Checklist
+
+| Requirement Category | Specific Element / Code Used | Graph # (1, 2, 3, or 4) |
+| :--- | :--- | :--- |
+| **Geom 1** | `geom_col()` | 1 |
+| **Geom 2** | `geom_text()` | 1 |
+| **Geom 3** | `geom_line()` | 2 |
+| **Geom 4** | `geom_point()` | 2 |
+| **Geom 5** | `geom_boxplot()` | 3 |
+| **Aesthetic 1** *(inside `aes()`)* | `x` | 1 |
+| **Aesthetic 2** *(inside `aes()`)* | `y` | 1 |
+| **Aesthetic 3** *(inside `aes()`)* | `fill` | 1 |
+| **Aesthetic 4** *(inside `aes()`)* | `label` | 1 |
+| **Aesthetic 5** *(inside `aes()`)* | `color` | 2 |
+| **Aesthetic 6** *(inside `aes()`)* | `group` | 2 |
+| **Non-Aesthetic 1** *(outside `aes()`)* | `width` | 1 |
+| **Non-Aesthetic 2** *(outside `aes()`)* | `hjust` | 1 |
+| **Non-Aesthetic 3** *(outside `aes()`)* | `size` | 1 |
+| **Non-Aesthetic 4** *(outside `aes()`)* | `linewidth` | 2 |
+| **Non-Aesthetic 5** *(outside `aes()`)* | `alpha` | 2 |
+| **Non-Aesthetic 6** *(outside `aes()`)* | `outlier.shape` | 3 |
+| **Custom Scale 1** | `scale_x_date()` | 2 |
+| **Custom Scale 2** | `scale_fill_viridis_c()` | 4 |
