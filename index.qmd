@@ -107,7 +107,58 @@ enrollment_group |>
 Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups.
 ```
 Children represented the largest Medicaid and CHIP eligibility group in December 2022, with approximately 43.1 million enrollees. The adult expansion group was the second largest, with about 25.5 million enrollees. Enrollment among COVID newly-eligible beneficiaries was substantially smaller than in the other major eligibility groups.
-## Visualization 2
+
+## Visualization 2: Enrollment Trends by Eligibility Group
+```{r}
+trend_data <- medicaid |>
+  filter(
+    Month >= as.Date("2017-01-01"),
+    `majoreligibility group` != "Unknown"
+  ) |>
+  group_by(Month, `majoreligibility group`) |>
+  summarize(
+    enrollment = sum(CountEnrolled),
+    .groups = "drop"
+  )
+
+trend_data |>
+  ggplot(
+    aes(
+      x = Month,
+      y = enrollment,
+      color = `majoreligibility group`,
+      group = `majoreligibility group`
+    )
+  ) +
+  geom_line(linewidth = 0.9) +
+  geom_point(
+    data = trend_data |>
+      filter(format(Month, "%m") == "12"),
+    size = 2,
+    alpha = 0.8
+  ) +
+  scale_x_date(
+    breaks = as.Date(paste0(2017:2022, "-01-01")),
+    date_labels = "%Y"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1e-6,
+      suffix = "M"
+    )
+  ) +
+  labs(
+    title = "Medicaid and CHIP Enrollment Trends Differ Across Eligibility Groups",
+    subtitle = "Monthly enrollment across reporting jurisdictions, 2017–2022",
+    x = NULL,
+    y = "Enrollment",
+    color = "Eligibility group",
+    caption = "Source: Centers for Medicare & Medicaid Services (CMS)"
+  ) +
+  theme_minimal()
+```
+
+Children remained the largest Medicaid and CHIP eligibility group throughout 2017–2022. Enrollment increased notably after 2020 among children, adults, and especially the adult expansion group. In contrast, enrollment among aged beneficiaries and persons with disabilities changed more gradually over the period.
 
 ## Visualization 3
 
