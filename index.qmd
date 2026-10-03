@@ -160,7 +160,49 @@ trend_data |>
 
 Children remained the largest Medicaid and CHIP eligibility group throughout 2017–2022. Enrollment increased notably after 2020 among children, adults, and especially the adult expansion group. In contrast, enrollment among aged beneficiaries and persons with disabilities changed more gradually over the period.
 
-## Visualization 3
+## Visualization 3: State Enrollment Distribution by Eligibility Group
+```{r}
+state_enrollment <- medicaid |>
+  filter(
+    Month == latest_month,
+    `majoreligibility group` != "Unknown"
+  )
+  
+state_enrollment |>
+  ggplot(
+    aes(
+      x = `majoreligibility group`,
+      y = CountEnrolled,
+      fill = `majoreligibility group`
+    )
+  ) +
+  geom_boxplot(
+    width = 0.65,
+    alpha = 0.7,
+    outlier.shape = 16
+  ) +
+  scale_y_continuous(
+    labels = scales::label_number(
+      scale = 1e-6,
+      suffix = "M"
+    )
+  ) +
+  labs(
+    title = "State Enrollment Varies Widely Across Eligibility Groups",
+    subtitle = "Distribution of enrollment across reporting jurisdictions, December 2022",
+    x = NULL,
+    y = "Enrollment",
+    fill = "Eligibility group",
+    caption = "Source: Centers for Medicare & Medicaid Services (CMS)"
+  ) +
+  coord_flip() +
+  theme_minimal() +
+  theme(
+    legend.position = "none"
+  )
+```
+
+Children had the highest state-level enrollment and the widest distribution across reporting jurisdictions in December 2022. The adult expansion group also showed substantial variation across states. Several eligibility groups had high-enrollment outliers, indicating that enrollment was unevenly distributed across jurisdictions.
 
 ## Visualization 4
 
